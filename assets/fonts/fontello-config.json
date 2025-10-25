@@ -1,0 +1,280 @@
+{
+  "name": "aira-chat-icons",
+  "css_prefix_text": "icon-",
+  "css_use_suffix": false,
+  "hinting": true,
+  "units_per_em": 1000,
+  "ascent": 850,
+  "glyphs": [
+    {
+      "uid": "chat",
+      "css": "chat",
+      "code": 57344,
+      "src": "entypo"
+    },
+    {
+      "uid": "memory",
+      "css": "memory", 
+      "code": 57345,
+      "src": "entypo"
+    },
+    {
+      "uid": "user",
+      "css": "user",
+      "code": 57346,
+      "src": "entypo"
+    },
+    {
+      "uid": "home",
+      "css": "home",
+      "code": 57347,
+      "src": "entypo"
+    },
+    {
+      "uid": "settings",
+      "css": "settings",
+      "code": 57348,
+      "src": "entypo"
+    },
+    {
+      "uid": "send",
+      "css": "send",
+      "code": 57349,
+      "src": "entypo"
+    },
+    {
+      "uid": "message",
+      "css": "message",
+      "code": 57350,
+      "src": "entypo"
+    },
+    {
+      "uid": "typing",
+      "css": "typing",
+      "code": 57351,
+      "src": "entypo"
+    },
+    {
+      "uid": "online",
+      "css": "online",
+      "code": 57352,
+      "src": "entypo"
+    },
+    {
+      "uid": "offline",
+      "css": "offline",
+      "code": 57353,
+      "src": "entypo"
+    },
+    {
+      "uid": "brain",
+      "css": "brain",
+      "code": 57354,
+      "src": "entypo"
+    },
+    {
+      "uid": "bookmark",
+      "css": "bookmark",
+      "code": 57355,
+      "src": "entypo"
+    },
+    {
+      "uid": "tag",
+      "css": "tag",
+      "code": 57356,
+      "src": "entypo"
+    },
+    {
+      "uid": "calendar",
+      "css": "calendar",
+      "code": 57357,
+      "src": "entypo"
+    },
+    {
+      "uid": "clock",
+      "css": "clock",
+      "code": 57358,
+      "src": "entypo"
+    },
+    {
+      "uid": "heart",
+      "css": "heart",
+      "code": 57359,
+      "src": "entypo"
+    },
+    {
+      "uid": "star",
+      "css": "star",
+      "code": 57360,
+      "src": "entypo"
+    },
+    {
+      "uid": "like",
+      "css": "like",
+      "code": 57361,
+      "src": "entypo"
+    },
+    {
+      "uid": "dislike",
+      "css": "dislike",
+      "code": 57362,
+      "src": "entypo"
+    },
+    {
+      "uid": "share",
+      "css": "share",
+      "code": 57363,
+      "src": "entypo"
+    },
+    {
+      "uid": "copy",
+      "css": "copy",
+      "code": 57364,
+      "src": "entypo"
+    },
+    {
+      "uid": "edit",
+      "css": "edit",
+      "code": 57365,
+      "src": "entypo"
+    },
+    {
+      "uid": "delete",
+      "css": "delete",
+      "code": 57366,
+      "src": "entypo"
+    },
+    {
+      "uid": "add",
+      "css": "add",
+      "code": 57367,
+      "src": "entypo"
+    },
+    {
+      "uid": "remove",
+      "css": "remove",
+      "code": 57368,
+      "src": "entypo"
+    },
+    {
+      "uid": "search",
+      "css": "search",
+      "code": 57369,
+      "src": "entypo"
+    },
+    {
+      "uid": "filter",
+      "css": "filter",
+      "code": 57370,
+      "src": "entypo"
+    },
+    {
+      "uid": "check",
+      "css": "check",
+      "code": 57371,
+      "src": "entypo"
+    },
+    {
+      "uid": "cross",
+      "css": "cross",
+      "code": 57372,
+      "src": "entypo"
+    },
+    {
+      "uid": "warning",
+      "css": "warning",
+      "code": 57373,
+      "src": "entypo"
+    },
+    {
+      "uid": "info",
+      "css": "info",
+      "code": 57374,
+      "src": "entypo"
+    },
+    {
+      "uid": "question",
+      "css": "question",
+      "code": 57375,
+      "src": "entypo"
+    },
+    {
+      "uid": "arrow-left",
+      "css": "arrow-left",
+      "code": 57376,
+      "src": "entypo"
+    },
+    {
+      "uid": "arrow-right",
+      "css": "arrow-right",
+      "code": 57377,
+      "src": "entypo"
+    },
+    {
+      "uid": "arrow-up",
+      "css": "arrow-up",
+      "code": 57378,
+      "src": "entypo"
+    },
+    {
+      "uid": "arrow-down",
+      "css": "arrow-down",
+      "code": 57379,
+      "src": "entypo"
+    },
+    {
+      "uid": "image",
+      "css": "image",
+      "code": 57380,
+      "src": "entypo"
+    },
+    {
+      "uid": "video",
+      "css": "video",
+      "code": 57381,
+      "src": "entypo"
+    },
+    {
+      "uid": "audio",
+      "css": "audio",
+      "code": 57382,
+      "src": "entypo"
+    },
+    {
+      "uid": "file",
+      "css": "file",
+      "code": 57383,
+      "src": "entypo"
+    },
+    {
+      "uid": "folder",
+      "css": "folder",
+      "code": 57384,
+      "src": "entypo"
+    },
+    {
+      "uid": "wifi",
+      "css": "wifi",
+      "code": 57385,
+      "src": "entypo"
+    },
+    {
+      "uid": "bluetooth",
+      "css": "bluetooth",
+      "code": 57386,
+      "src": "entypo"
+    },
+    {
+      "uid": "battery",
+      "css": "battery",
+      "code": 57387,
+      "src": "entypo"
+    },
+    {
+      "uid": "signal",
+      "css": "signal",
+      "code": 57388,
+      "src": "entypo"
+    }
+  ]
+}
