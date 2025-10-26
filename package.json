@@ -7,7 +7,8 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "android": "react-native run-android --active-arch-only"
+    "android": "react-native run-android --active-arch-only",
+    "ios-pod": "cd ios && rm -rf Pods && xcodebuild clean  &&  pod install"
   },
   "dependencies": {
     "@react-native/new-app-screen": "0.82.1",

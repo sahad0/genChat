@@ -33,7 +33,7 @@ const getAIResponse = (
 
   if (message.includes('help') || message.includes('advice')) {
     return {
-      text: "I'm here to help. What specifically are you thinking about?",
+      text: "I'm here to help! I can assist you with questions, provide advice, help with problem-solving, or just have a conversation. What would you like to explore today?",
     };
   }
 
@@ -90,15 +90,14 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
     set({currentStreamingMessage: streamingMessage});
 
-    // Simulate word-by-word streaming
-    const words = response.text.split(' ');
+    // Simulate character-by-character streaming
     let currentText = '';
-    let wordIndex = 0;
+    let charIndex = 0;
 
     currentStreamInterval = setInterval(() => {
-      if (wordIndex < words.length) {
-        currentText += (wordIndex > 0 ? ' ' : '') + words[wordIndex];
-        wordIndex++;
+      if (charIndex < response.text.length) {
+        currentText += response.text[charIndex];
+        charIndex++;
 
         set(state => ({
           currentStreamingMessage: {

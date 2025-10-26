@@ -50,4 +50,5 @@ export type NavigationParamList = {
   Chat: undefined;
   Memory: undefined;
   Main: undefined;
+  MessageInput: {prefilledText?: string} | undefined;
 };

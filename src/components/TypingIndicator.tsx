@@ -21,12 +21,12 @@ const TypingIndicator: React.FC<TypingIndicatorProps> = ({isVisible}) => {
             Animated.delay(delay),
             Animated.timing(animValue, {
               toValue: 1,
-              duration: 600,
+              duration: 400,
               useNativeDriver: true,
             }),
             Animated.timing(animValue, {
-              toValue: 0.3,
-              duration: 600,
+              toValue: 0.4,
+              duration: 400,
               useNativeDriver: true,
             }),
           ]),
@@ -34,8 +34,8 @@ const TypingIndicator: React.FC<TypingIndicatorProps> = ({isVisible}) => {
       };
 
       const animation1 = createAnimation(dot1Anim, 0);
-      const animation2 = createAnimation(dot2Anim, 200);
-      const animation3 = createAnimation(dot3Anim, 400);
+      const animation2 = createAnimation(dot2Anim, 150);
+      const animation3 = createAnimation(dot3Anim, 300);
 
       animation1.start();
       animation2.start();
@@ -47,9 +47,9 @@ const TypingIndicator: React.FC<TypingIndicatorProps> = ({isVisible}) => {
         animation3.stop();
       };
     } else {
-      dot1Anim.setValue(0.3);
-      dot2Anim.setValue(0.3);
-      dot3Anim.setValue(0.3);
+      dot1Anim.setValue(0.4);
+      dot2Anim.setValue(0.4);
+      dot3Anim.setValue(0.4);
     }
   }, [isVisible, dot1Anim, dot2Anim, dot3Anim]);
 
@@ -66,8 +66,8 @@ const TypingIndicator: React.FC<TypingIndicatorProps> = ({isVisible}) => {
             transform: [
               {
                 scale: dot1Anim.interpolate({
-                  inputRange: [0.3, 1],
-                  outputRange: [0.8, 1.2],
+                  inputRange: [0.4, 1],
+                  outputRange: [0.9, 1.1],
                 }),
               },
             ],
@@ -83,8 +83,8 @@ const TypingIndicator: React.FC<TypingIndicatorProps> = ({isVisible}) => {
             transform: [
               {
                 scale: dot2Anim.interpolate({
-                  inputRange: [0.3, 1],
-                  outputRange: [0.8, 1.2],
+                  inputRange: [0.4, 1],
+                  outputRange: [0.9, 1.1],
                 }),
               },
             ],
@@ -100,8 +100,8 @@ const TypingIndicator: React.FC<TypingIndicatorProps> = ({isVisible}) => {
             transform: [
               {
                 scale: dot3Anim.interpolate({
-                  inputRange: [0.3, 1],
-                  outputRange: [0.8, 1.2],
+                  inputRange: [0.4, 1],
+                  outputRange: [0.9, 1.1],
                 }),
               },
             ],

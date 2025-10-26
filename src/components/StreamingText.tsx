@@ -12,7 +12,7 @@ interface StreamingTextProps {
 
 const StreamingText: React.FC<StreamingTextProps> = ({
   text,
-  speed = 50,
+  speed = 20,
   onComplete,
   isStreaming = true,
 }) => {
@@ -52,10 +52,12 @@ const StreamingText: React.FC<StreamingTextProps> = ({
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.text, {color: theme.text}]}>
-        {displayedText}
+      <Text style={[styles.text, {color: theme.aiText || '#FBFAF0'}]}>
+        {displayedText || 'Loading...'}
         {isStreaming && currentIndex < text.length && (
-          <Text style={[styles.cursor, {color: theme.primary}]}>|</Text>
+          <Text style={[styles.cursor, {color: theme.aiText || '#FBFAF0'}]}>
+            |
+          </Text>
         )}
       </Text>
     </View>
@@ -65,10 +67,17 @@ const StreamingText: React.FC<StreamingTextProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    minHeight: 20,
   },
   text: {
     ...typography.body,
     lineHeight: 22,
+    flex: 1,
+    flexWrap: 'wrap',
+    paddingHorizontal: 0,
+    paddingVertical: 0,
   },
   cursor: {
     fontSize: 16,

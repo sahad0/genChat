@@ -142,10 +142,43 @@ const CustomIcon: React.FC<CustomIconProps> = ({name, size, color, style}) => {
       case 'robot':
         return (
           <Svg {...iconProps}>
-            <Path
-              d="M12 2C13.1 2 14 2.9 14 4V6H16C17.1 6 18 6.9 18 8V10H20C21.1 10 22 10.9 22 12V16C22 17.1 21.1 18 20 18H18V20C18 21.1 17.1 22 16 22H8C6.9 22 6 21.1 6 20V18H4C2.9 18 2 17.1 2 16V12C2 10.9 2.9 10 4 10H6V8C6 6.9 6.9 6 8 6H10V4C10 2.9 10.9 2 12 2ZM12 4V6H12V4ZM8 8V10H16V8H8ZM4 12V16H6V12H4ZM18 12V16H20V12H18ZM8 14H10V16H8V14ZM14 14H16V16H14V14ZM10 8H14V10H10V8Z"
-              fill={color}
-            />
+            <G>
+              {/* Robot head */}
+              <Rect x="6" y="4" width="12" height="10" rx="2" fill={color} />
+              {/* Antenna */}
+              <Circle cx="12" cy="2" r="1" fill={color} />
+              <Rect x="11.5" y="2" width="1" height="2" fill={color} />
+              {/* Eyes */}
+              <Circle cx="9" cy="7" r="1.5" fill="#FBFAF0" />
+              <Circle cx="15" cy="7" r="1.5" fill="#FBFAF0" />
+              <Circle cx="9" cy="7" r="0.8" fill={color} />
+              <Circle cx="15" cy="7" r="0.8" fill={color} />
+              {/* Mouth */}
+              <Rect
+                x="10"
+                y="10"
+                width="4"
+                height="1"
+                rx="0.5"
+                fill="#FBFAF0"
+              />
+              {/* Body */}
+              <Rect x="7" y="14" width="10" height="8" rx="1" fill={color} />
+              {/* Chest panel */}
+              <Rect x="9" y="16" width="6" height="4" rx="0.5" fill="#FBFAF0" />
+              {/* Arms */}
+              <Rect x="4" y="15" width="2" height="6" rx="1" fill={color} />
+              <Rect x="18" y="15" width="2" height="6" rx="1" fill={color} />
+              {/* Hands */}
+              <Circle cx="5" cy="22" r="1.5" fill={color} />
+              <Circle cx="19" cy="22" r="1.5" fill={color} />
+              {/* Legs */}
+              <Rect x="8" y="22" width="2" height="4" rx="1" fill={color} />
+              <Rect x="14" y="22" width="2" height="4" rx="1" fill={color} />
+              {/* Feet */}
+              <Rect x="7" y="25" width="4" height="1" rx="0.5" fill={color} />
+              <Rect x="13" y="25" width="4" height="1" rx="0.5" fill={color} />
+            </G>
           </Svg>
         );
       case 'bag':

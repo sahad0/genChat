@@ -2,13 +2,11 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import CustomIcon from './CustomIcon';
 import * as Animatable from 'react-native-animatable';
-import LinearGradient from 'react-native-linear-gradient';
 import StreamingText from './StreamingText';
-import TypingIndicator from './TypingIndicator';
 
 import {Message} from '../types';
 import {useTheme} from '../context/ThemeContext';
-import {typography, spacing, shadows} from '../theme';
+import {typography, spacing} from '../theme';
 
 interface MessageBubbleProps {
   message: Message;
@@ -40,6 +38,25 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 
       <View
         style={[styles.bubble, isUser ? styles.userBubble : styles.aiBubble]}>
+        {message.memoryTags && message.memoryTags.length > 0 && !isUser && (
+          <View style={styles.memoryTagContainer}>
+            <TouchableOpacity
+              style={[
+                styles.memoryTag,
+                {
+                  backgroundColor: theme.memoryTag,
+                  borderColor: theme.memoryTagBorder,
+                },
+              ]}>
+              <CustomIcon name="memory" size={12} color={theme.memoryTagText} />
+              <Text
+                style={[styles.memoryTagText, {color: theme.memoryTagText}]}>
+                Remembered: {message.memoryTags.join(', ')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         {isUser ? (
           <View
             style={[
@@ -57,35 +74,16 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
               <StreamingText
                 text={message.text}
                 isStreaming={isStreaming}
-                speed={30}
+                speed={50}
               />
             ) : (
               <Text style={[styles.aiText, {color: theme.aiText}]}>
                 {message.text}
               </Text>
             )}
-            {isStreaming && <TypingIndicator isVisible={isStreaming} />}
           </View>
         )}
       </View>
-
-      {message.memoryTags && message.memoryTags.length > 0 && (
-        <View style={styles.memoryTagContainer}>
-          <TouchableOpacity
-            style={[
-              styles.memoryTag,
-              {
-                backgroundColor: theme.memoryTag,
-                borderColor: theme.memoryTagBorder,
-              },
-            ]}>
-            <CustomIcon name="memory" size={12} color={theme.memoryTagText} />
-            <Text style={[styles.memoryTagText, {color: theme.memoryTagText}]}>
-              Remembered: {message.memoryTags.join(', ')}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
 
       {isUser && (
         <View style={styles.userAvatarContainer}>
@@ -101,8 +99,8 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    marginVertical: spacing.messageMargin,
-    paddingHorizontal: spacing.md,
+    marginVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
     alignItems: 'flex-end',
   },
   userContainer: {
@@ -112,7 +110,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   avatarContainer: {
-    marginRight: spacing.sm,
+    marginRight: spacing.md,
     marginBottom: spacing.xs,
   },
   avatar: {
@@ -125,8 +123,6 @@ const styles = StyleSheet.create({
   bubble: {
     maxWidth: '80%',
     borderRadius: spacing.radiusLg,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.messagePadding,
   },
   userBubble: {
     marginLeft: 'auto',
@@ -138,6 +134,9 @@ const styles = StyleSheet.create({
     borderRadius: spacing.radiusLg,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.messagePadding,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    maxWidth: '100%',
   },
   aiBubbleContent: {
     borderRadius: spacing.radiusLg,
@@ -146,25 +145,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     maxWidth: '100%',
+    flex: 1,
   },
   userText: {
     ...typography.body,
     fontWeight: '500',
     lineHeight: 22,
-    borderLeftWidth: 3,
-    borderLeftColor: '#2E2E2C',
-    paddingLeft: spacing.sm,
-    marginLeft: -spacing.sm,
   },
   aiText: {
     ...typography.body,
     lineHeight: 22,
     flex: 1,
     flexWrap: 'wrap',
-    borderLeftWidth: 3,
-    borderLeftColor: '#E5E5E5',
-    paddingLeft: spacing.sm,
-    marginLeft: -spacing.sm,
   },
   typingIndicator: {
     flexDirection: 'row',
@@ -187,8 +179,8 @@ const styles = StyleSheet.create({
     // Animation delay handled by Animated API
   },
   memoryTagContainer: {
-    marginTop: spacing.sm,
-    marginLeft: 48,
+    marginBottom: spacing.sm,
+    alignSelf: 'flex-start',
   },
   memoryTag: {
     flexDirection: 'row',
@@ -202,9 +194,10 @@ const styles = StyleSheet.create({
     ...typography.caption,
     fontWeight: '500',
     marginLeft: spacing.xs,
+    fontSize: 11,
   },
   userAvatarContainer: {
-    marginLeft: spacing.sm,
+    marginLeft: spacing.md,
     marginBottom: spacing.xs,
   },
   userAvatar: {

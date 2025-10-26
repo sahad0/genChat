@@ -10,18 +10,28 @@ import {
 } from 'react-native';
 import {useAuthStore} from '../store/authStore';
 import SVGDecorations from '../components/SVGDecorations';
+import {
+  GeometricWarmBackground,
+  OrganicNatureBackground,
+  ModernArchitecturalBackground,
+  FlowingOrganicBackground,
+  BotanicalNatureBackground,
+} from '../components/ArtisticBackgrounds';
 
 const LoginScreen: React.FC = () => {
   const {login} = useAuthStore();
   const [showInputs, setShowInputs] = useState(false);
   const [email, setEmail] = useState('test@aira.ai');
   const [password, setPassword] = useState('password');
+  const [currentBackground, setCurrentBackground] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
   const buttonScale = useRef(new Animated.Value(1)).current;
   const arrowRotation = useRef(new Animated.Value(0)).current;
+  const spinAnim = useRef(new Animated.Value(0)).current;
 
   const handleInitialClick = () => {
     setShowInputs(true);
@@ -40,12 +50,9 @@ const LoginScreen: React.FC = () => {
   };
 
   const handleLogin = async () => {
-    // Animate arrow rotation
-    Animated.timing(arrowRotation, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
+    if (isLoading) return;
+
+    setIsLoading(true);
 
     // Animate button press
     Animated.sequence([
@@ -61,6 +68,16 @@ const LoginScreen: React.FC = () => {
       }),
     ]).start();
 
+    // Start spinning animation
+    Animated.loop(
+      Animated.timing(spinAnim, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+      {iterations: -1},
+    ).start();
+
     try {
       console.log('Attempting login with:', email, password);
       const success = await login(email, password);
@@ -72,6 +89,10 @@ const LoginScreen: React.FC = () => {
       }
     } catch (error) {
       console.log('Login error:', error);
+    } finally {
+      setIsLoading(false);
+      spinAnim.stopAnimation();
+      spinAnim.setValue(0);
     }
   };
 
@@ -79,6 +100,26 @@ const LoginScreen: React.FC = () => {
     inputRange: [0, 1],
     outputRange: ['0deg', '45deg'],
   });
+
+  const spinInterpolate = spinAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
+  const cycleBackground = () => {
+    setCurrentBackground(prev => (prev + 1) % 5);
+  };
+
+  const renderArtisticBackground = () => {
+    const backgrounds = [
+      <GeometricWarmBackground key="geometric" opacity={0.4} />,
+      <OrganicNatureBackground key="organic" opacity={0.4} />,
+      <ModernArchitecturalBackground key="architectural" opacity={0.4} />,
+      <FlowingOrganicBackground key="flowing" opacity={0.4} />,
+      <BotanicalNatureBackground key="botanical" opacity={0.4} />,
+    ];
+    return backgrounds[currentBackground];
+  };
 
   return (
     <View style={styles.container}>
@@ -88,15 +129,19 @@ const LoginScreen: React.FC = () => {
         translucent
       />
       <SVGDecorations />
+      {renderArtisticBackground()}
 
       {/* Main content area */}
       <View style={styles.content}>
         {/* Artistic title section */}
-        <View style={styles.titleSection}>
+        <TouchableOpacity
+          style={styles.titleSection}
+          onPress={cycleBackground}
+          activeOpacity={0.8}>
           <Text style={styles.mainTitle}>Welcome</Text>
           <Text style={styles.subtitle}>to the future of</Text>
           <Text style={styles.accentTitle}>conversation</Text>
-        </View>
+        </TouchableOpacity>
 
         {/* Artistic description */}
         <View style={styles.descriptionSection}>
@@ -164,16 +209,24 @@ const LoginScreen: React.FC = () => {
           ) : (
             <Animated.View style={{transform: [{scale: buttonScale}]}}>
               <TouchableOpacity
-                style={styles.arrowButton}
-                onPress={handleLogin}>
+                style={[
+                  styles.arrowButton,
+                  isLoading && styles.arrowButtonLoading,
+                ]}
+                onPress={handleLogin}
+                disabled={isLoading}>
                 <View style={styles.arrowButtonGradient}>
-                  <Animated.Text
-                    style={[
-                      styles.arrowButtonText,
-                      {transform: [{rotate: arrowRotationInterpolate}]},
-                    ]}>
-                    →
-                  </Animated.Text>
+                  {isLoading ? (
+                    <Animated.Text
+                      style={[
+                        styles.arrowButtonText,
+                        {transform: [{rotate: spinInterpolate}]},
+                      ]}>
+                      ⟳
+                    </Animated.Text>
+                  ) : (
+                    <Text style={styles.arrowButtonText}>→</Text>
+                  )}
                 </View>
               </TouchableOpacity>
             </Animated.View>
@@ -185,6 +238,38 @@ const LoginScreen: React.FC = () => {
           <Text style={styles.footerText}>
             Powered by advanced AI technology
           </Text>
+          <View style={styles.backgroundIndicator}>
+            <View
+              style={[
+                styles.indicatorDot,
+                currentBackground === 0 && styles.activeDot,
+              ]}
+            />
+            <View
+              style={[
+                styles.indicatorDot,
+                currentBackground === 1 && styles.activeDot,
+              ]}
+            />
+            <View
+              style={[
+                styles.indicatorDot,
+                currentBackground === 2 && styles.activeDot,
+              ]}
+            />
+            <View
+              style={[
+                styles.indicatorDot,
+                currentBackground === 3 && styles.activeDot,
+              ]}
+            />
+            <View
+              style={[
+                styles.indicatorDot,
+                currentBackground === 4 && styles.activeDot,
+              ]}
+            />
+          </View>
         </View>
       </View>
     </View>
@@ -250,14 +335,8 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
     overflow: 'hidden',
-    shadowColor: '#2E2E2C',
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
+    borderWidth: 1,
+    borderColor: '#EDECE3',
   },
   buttonGradient: {
     flex: 1,
@@ -282,6 +361,23 @@ const styles = StyleSheet.create({
     color: '#5D5C5B',
     fontWeight: '300',
     letterSpacing: 0.5,
+    marginBottom: 8,
+  },
+  backgroundIndicator: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
+  },
+  indicatorDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(93, 92, 91, 0.3)',
+  },
+  activeDot: {
+    backgroundColor: '#D4A574',
+    transform: [{scale: 1.2}],
   },
   // New styles for animated inputs
   inputsContainer: {
@@ -320,6 +416,8 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#EDECE3',
   },
   arrowButtonGradient: {
     flex: 1,
@@ -335,6 +433,19 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 32,
     marginBottom: 10,
+  },
+  arrowButtonLoading: {
+    opacity: 0.8,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#5D5C5B',
+    fontWeight: '500',
+    letterSpacing: 0.5,
   },
 });
 

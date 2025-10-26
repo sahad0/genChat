@@ -91,7 +91,8 @@ const MemoryScreen: React.FC = () => {
         {/* Header */}
         <Animatable.View
           animation="fadeInDown"
-          duration={500}
+          duration={600}
+          delay={0}
           style={[
             styles.header,
             {backgroundColor: theme.surface, borderBottomColor: theme.border},
@@ -118,20 +119,24 @@ const MemoryScreen: React.FC = () => {
                 styles.logoutButton,
                 {backgroundColor: theme.surfaceElevated},
               ]}>
-              <CustomIcon
-                name="settings"
-                size={20}
-                color={theme.textSecondary}
-              />
+              <Text style={[styles.logoutButtonText, {color: theme.text}]}>
+                Logout
+              </Text>
             </TouchableOpacity>
           </View>
         </Animatable.View>
 
         {/* Category Filter */}
-        {renderCategoryFilter()}
+        <Animatable.View animation="fadeInDown" duration={600} delay={100}>
+          {renderCategoryFilter()}
+        </Animatable.View>
 
         {/* Memories List */}
-        <View style={styles.memoriesContainer}>
+        <Animatable.View
+          animation="fadeInDown"
+          duration={600}
+          delay={200}
+          style={styles.memoriesContainer}>
           {filteredMemories.length > 0 ? (
             <FlatList
               data={filteredMemories}
@@ -141,10 +146,7 @@ const MemoryScreen: React.FC = () => {
               showsVerticalScrollIndicator={false}
             />
           ) : (
-            <Animatable.View
-              animation="fadeIn"
-              duration={1000}
-              style={styles.emptyState}>
+            <View style={styles.emptyState}>
               <View
                 style={[styles.emptyIcon, {backgroundColor: theme.primary}]}>
                 <CustomIcon name="brain" size={32} color="#ffffff" />
@@ -156,9 +158,9 @@ const MemoryScreen: React.FC = () => {
                 style={[styles.emptySubtitle, {color: theme.textSecondary}]}>
                 Start chatting to build your memory profile
               </Text>
-            </Animatable.View>
+            </View>
           )}
-        </View>
+        </Animatable.View>
       </SafeAreaView>
     </View>
   );
@@ -173,9 +175,9 @@ const styles = StyleSheet.create({
   },
   header: {
     borderBottomWidth: 1,
+    borderBottomColor: '#EDECE3',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
-    ...shadows.light,
   },
   headerContent: {
     flexDirection: 'row',
@@ -194,7 +196,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: spacing.md,
-    ...shadows.medium,
+    borderWidth: 1,
+    borderColor: '#EDECE3',
   },
   headerText: {
     flex: 1,
@@ -210,6 +213,13 @@ const styles = StyleSheet.create({
   logoutButton: {
     padding: spacing.sm,
     borderRadius: spacing.radiusSm,
+    borderWidth: 1,
+    borderColor: '#EDECE3',
+  },
+  logoutButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    letterSpacing: 0.5,
   },
   categoryContainer: {
     paddingVertical: spacing.md,
@@ -249,7 +259,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.lg,
-    ...shadows.large,
+    borderWidth: 1,
+    borderColor: '#EDECE3',
   },
   emptyTitle: {
     ...typography.h3,

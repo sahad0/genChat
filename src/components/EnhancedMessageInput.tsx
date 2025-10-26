@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   View,
   TextInput,
@@ -14,6 +14,8 @@ interface EnhancedMessageInputProps {
   disabled?: boolean;
   isGenerating?: boolean;
   onStopGeneration?: () => void;
+  autoFocus?: boolean;
+  initialText?: string;
 }
 
 const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
@@ -21,11 +23,17 @@ const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
   disabled = false,
   isGenerating = false,
   onStopGeneration,
+  autoFocus = false,
+  initialText = '',
 }) => {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(initialText);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<TextInput>(null);
   const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    setMessage(initialText);
+  }, [initialText]);
 
   const handleSend = () => {
     if (message.trim() && !disabled && !isGenerating) {
@@ -82,6 +90,7 @@ const EnhancedMessageInput: React.FC<EnhancedMessageInputProps> = ({
             maxLength={500}
             editable={!disabled && !isGenerating}
             onKeyPress={handleKeyPress}
+            autoFocus={autoFocus}
           />
 
           {isGenerating ? (

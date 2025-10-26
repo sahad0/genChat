@@ -1,56 +1,38 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   View,
   FlatList,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
   TouchableOpacity,
   Text,
   StatusBar,
   Animated,
-  Dimensions,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useChatStore} from '../store/chatStore';
 import {useAuthStore} from '../store/authStore';
 import MessageBubble from '../components/MessageBubble';
-import EnhancedMessageInput from '../components/EnhancedMessageInput';
-import BottomSheet from '../components/BottomSheet';
 import SVGDecorations from '../components/SVGDecorations';
-import {
-  GeometricWarmBackground,
-  OrganicNatureBackground,
-  ModernArchitecturalBackground,
-  FlowingOrganicBackground,
-  BotanicalNatureBackground,
-} from '../components/ArtisticBackgrounds';
-import {
-  GeometricWarmIcon,
-  OrganicNatureIcon,
-  ModernArchitecturalIcon,
-  FlowingOrganicIcon,
-  BotanicalNatureIcon,
-} from '../components/ArtisticIcons';
+import CustomIcon from '../components/CustomIcon';
+import {spacing} from '../theme';
 
-const {width, height} = Dimensions.get('window');
+interface ChatScreenProps {
+  navigation: any;
+}
 
-const ChatScreen: React.FC = () => {
-  const {
-    messages,
-    isTyping,
-    currentStreamingMessage,
-    sendMessage,
-    stopGeneration,
-  } = useChatStore();
+const ChatScreen: React.FC<ChatScreenProps> = ({navigation}) => {
+  const {messages, isTyping, currentStreamingMessage} = useChatStore();
   const {logout} = useAuthStore();
   const flatListRef = useRef<FlatList>(null);
-  const [showBottomSheet, setShowBottomSheet] = useState(false);
-  const [currentBackground, setCurrentBackground] = useState(0);
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
+
+  // Combine messages with streaming message for FlatList
+  const allMessages = currentStreamingMessage
+    ? [...messages, currentStreamingMessage]
+    : messages;
 
   useEffect(() => {
     // Animate in on mount
@@ -68,55 +50,37 @@ const ChatScreen: React.FC = () => {
     ]).start();
 
     // Auto-scroll to bottom when new messages arrive
-    if (messages.length > 0) {
+    if (allMessages.length > 0) {
       setTimeout(() => {
         flatListRef.current?.scrollToEnd({animated: true});
       }, 100);
     }
-  }, [messages.length, currentStreamingMessage]);
+  }, [allMessages.length, fadeAnim, slideAnim]);
 
-  const handleSendMessage = (text: string) => {
-    sendMessage(text);
+  // Auto-scroll during streaming
+  useEffect(() => {
+    if (currentStreamingMessage) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({animated: true});
+      }, 50);
+    }
+  }, [currentStreamingMessage?.text]);
+
+  const handleOpenMessageInput = () => {
+    navigation.navigate('MessageInput');
   };
 
-  const handleStopGeneration = () => {
-    stopGeneration();
+  const handleSuggestionPress = (suggestion: string) => {
+    navigation.navigate('MessageInput', {prefilledText: suggestion});
   };
 
   const handleLogout = () => {
     logout();
   };
 
-  const cycleBackground = () => {
-    setCurrentBackground(prev => (prev + 1) % 5);
-  };
-
-  const renderArtisticBackground = () => {
-    const backgrounds = [
-      <GeometricWarmBackground key="geometric" opacity={0.15} />,
-      <OrganicNatureBackground key="organic" opacity={0.15} />,
-      <ModernArchitecturalBackground key="architectural" opacity={0.15} />,
-      <FlowingOrganicBackground key="flowing" opacity={0.15} />,
-      <BotanicalNatureBackground key="botanical" opacity={0.15} />,
-    ];
-    return backgrounds[currentBackground];
-  };
-
   const renderMessage = ({item, index}: {item: any; index: number}) => {
-    const isLastMessage = index === messages.length - 1;
-    const isStreaming =
-      isLastMessage && currentStreamingMessage?.id === item.id;
-
+    const isStreaming = item.isStreaming || false;
     return <MessageBubble message={item} isStreaming={isStreaming} />;
-  };
-
-  const renderStreamingMessage = () => {
-    if (currentStreamingMessage) {
-      return (
-        <MessageBubble message={currentStreamingMessage} isStreaming={true} />
-      );
-    }
-    return null;
   };
 
   return (
@@ -127,129 +91,116 @@ const ChatScreen: React.FC = () => {
         translucent
       />
       <SVGDecorations />
-      {renderArtisticBackground()}
 
       <SafeAreaView style={styles.safeArea}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.keyboardView}>
-          {/* Artistic Header */}
-          <Animated.View
-            style={[
-              styles.header,
-              {
-                opacity: fadeAnim,
-                transform: [{translateY: slideAnim}],
-              },
-            ]}>
-            <View style={styles.headerContent}>
-              <View style={styles.headerLeft}>
-                <View style={styles.headerAvatar}>
-                  <Text style={styles.avatarText}>AI</Text>
-                </View>
-                <View style={styles.headerText}>
-                  <Text style={styles.headerTitle}>AiRA</Text>
-                  <Text style={styles.headerSubtitle}>
-                    {isTyping ? 'Thinking...' : 'Your AI companion'}
-                  </Text>
-                </View>
+        {/* Artistic Header */}
+        <Animated.View
+          style={[
+            styles.header,
+            {
+              opacity: fadeAnim,
+              transform: [{translateY: slideAnim}],
+            },
+          ]}>
+          <View style={styles.headerContent}>
+            <View style={styles.headerLeft}>
+              <View style={styles.headerAvatar}>
+                <Text style={styles.avatarText}>AI</Text>
               </View>
-              <View style={styles.headerRight}>
-                <TouchableOpacity
-                  onPress={cycleBackground}
-                  style={styles.artisticButton}>
-                  {currentBackground === 0 && (
-                    <GeometricWarmIcon size={20} color="#D4A574" />
-                  )}
-                  {currentBackground === 1 && (
-                    <OrganicNatureIcon size={20} color="#90EE90" />
-                  )}
-                  {currentBackground === 2 && (
-                    <ModernArchitecturalIcon size={20} color="#708090" />
-                  )}
-                  {currentBackground === 3 && (
-                    <FlowingOrganicIcon size={20} color="#FFB6C1" />
-                  )}
-                  {currentBackground === 4 && (
-                    <BotanicalNatureIcon size={20} color="#8FBC8F" />
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handleLogout}
-                  style={styles.settingsButton}>
-                  <Text style={styles.settingsIcon}>⚙</Text>
-                </TouchableOpacity>
+              <View style={styles.headerText}>
+                <Text style={styles.headerTitle}>AiRA</Text>
+                <Text style={styles.headerSubtitle}>
+                  {isTyping ? 'Thinking...' : 'Your AI companion'}
+                </Text>
               </View>
             </View>
-          </Animated.View>
-
-          {/* Messages List */}
-          <Animated.View
-            style={[
-              styles.messagesContainer,
-              {
-                opacity: fadeAnim,
-                transform: [{translateY: slideAnim}],
-              },
-            ]}>
-            <FlatList
-              ref={flatListRef}
-              data={messages}
-              renderItem={renderMessage}
-              keyExtractor={item => item.id}
-              style={styles.messagesList}
-              contentContainerStyle={styles.messagesContent}
-              showsVerticalScrollIndicator={false}
-              ListEmptyComponent={
-                <View style={styles.emptyState}>
-                  <View style={styles.emptyAvatar}>
-                    <Text style={styles.emptyAvatarText}>💬</Text>
-                  </View>
-                  <Text style={styles.emptyTitle}>Start a conversation</Text>
-                  <Text style={styles.emptySubtitle}>
-                    Ask me anything or just say hello!
-                  </Text>
-                </View>
-              }
-            />
-            {renderStreamingMessage()}
-          </Animated.View>
-
-          {/* Artistic Input Trigger */}
-          <Animated.View
-            style={[
-              styles.inputTrigger,
-              {
-                opacity: fadeAnim,
-                transform: [{translateY: slideAnim}],
-              },
-            ]}>
             <TouchableOpacity
-              style={styles.inputButton}
-              onPress={() => setShowBottomSheet(true)}>
-              <Text style={styles.inputPlaceholder}>Type your message...</Text>
-              <View style={styles.sendButton}>
-                <Text style={styles.sendIcon}>→</Text>
-              </View>
+              onPress={handleLogout}
+              style={styles.settingsButton}>
+              <CustomIcon name="settings" size={20} color="#5D5C5B" />
             </TouchableOpacity>
-          </Animated.View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
+          </View>
+        </Animated.View>
 
-      {/* Enhanced Bottom Sheet */}
-      <BottomSheet
-        visible={showBottomSheet}
-        onClose={() => setShowBottomSheet(false)}>
-        <EnhancedMessageInput
-          onSendMessage={text => {
-            handleSendMessage(text);
-            setShowBottomSheet(false);
-          }}
-          disabled={isTyping}
-          isGenerating={isTyping}
-          onStopGeneration={handleStopGeneration}
-        />
-      </BottomSheet>
+        {/* Messages List */}
+        <Animated.View
+          style={[
+            styles.messagesContainer,
+            {
+              opacity: fadeAnim,
+              transform: [{translateY: slideAnim}],
+            },
+          ]}>
+          <FlatList
+            ref={flatListRef}
+            data={allMessages}
+            renderItem={renderMessage}
+            keyExtractor={item => item.id}
+            style={styles.messagesList}
+            contentContainerStyle={styles.messagesContent}
+            showsVerticalScrollIndicator={false}
+            onContentSizeChange={() => {
+              if (currentStreamingMessage) {
+                setTimeout(() => {
+                  flatListRef.current?.scrollToEnd({animated: true});
+                }, 50);
+              }
+            }}
+            ListEmptyComponent={
+              <View style={styles.emptyState}>
+                <View style={styles.emptyAvatar}>
+                  <CustomIcon name="robot" size={48} color="#2E2E2C" />
+                </View>
+                <Text style={styles.emptyTitle}>Welcome to AiRA</Text>
+                <Text style={styles.emptySubtitle}>
+                  Your AI companion is ready to help. Start by saying "hi" or
+                  ask me anything!
+                </Text>
+                <View style={styles.suggestionChips}>
+                  <TouchableOpacity
+                    style={styles.suggestionChip}
+                    onPress={() => handleSuggestionPress('hi')}>
+                    <Text style={styles.suggestionText}>Say hello</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.suggestionChip}
+                    onPress={() => handleSuggestionPress('Get help')}>
+                    <Text style={styles.suggestionText}>Get help</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.suggestionChip}
+                    onPress={() =>
+                      handleSuggestionPress('Tell me about startups')
+                    }>
+                    <Text style={styles.suggestionText}>
+                      Tell me about startups
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            }
+          />
+        </Animated.View>
+
+        {/* Artistic Input Trigger */}
+        <Animated.View
+          style={[
+            styles.inputTrigger,
+            {
+              opacity: fadeAnim,
+              transform: [{translateY: slideAnim}],
+            },
+          ]}>
+          <TouchableOpacity
+            style={styles.inputButton}
+            onPress={handleOpenMessageInput}>
+            <Text style={styles.inputPlaceholder}>Type your message...</Text>
+            <View style={styles.sendButton}>
+              <Text style={styles.sendIcon}>→</Text>
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
+      </SafeAreaView>
     </View>
   );
 };
@@ -260,9 +211,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAF9EF',
   },
   safeArea: {
-    flex: 1,
-  },
-  keyboardView: {
     flex: 1,
   },
   header: {
@@ -327,21 +275,6 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontWeight: '400',
   },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  artisticButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#EDECE3',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#D4A574',
-  },
   settingsButton: {
     width: 40,
     height: 40,
@@ -350,10 +283,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  settingsIcon: {
-    fontSize: 18,
-    color: '#4F4D4C',
-  },
   messagesContainer: {
     flex: 1,
   },
@@ -361,7 +290,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   messagesContent: {
-    paddingVertical: 16,
+    paddingVertical: spacing.md,
+    paddingBottom: spacing.xl + 100, // Much more space for streaming text
     flexGrow: 1,
   },
   emptyState: {
@@ -381,9 +311,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EDECE3',
   },
-  emptyAvatarText: {
-    fontSize: 32,
-  },
   emptyTitle: {
     fontSize: 24,
     fontWeight: '600',
@@ -398,18 +325,40 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
     fontWeight: '400',
+    marginBottom: spacing.lg,
+  },
+  suggestionChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: spacing.sm,
+  },
+  suggestionChip: {
+    backgroundColor: '#F0EFE8',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: spacing.radiusFull,
+    borderWidth: 1,
+    borderColor: '#E2E2DA',
+    marginHorizontal: spacing.xs,
+    marginVertical: spacing.xs,
+  },
+  suggestionText: {
+    fontSize: 14,
+    color: '#4F4D4C',
+    fontWeight: '500',
   },
   inputTrigger: {
-    paddingHorizontal: 24,
-    paddingVertical: 16,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
   },
   inputButton: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FBFAF0',
     borderRadius: 24,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
     borderWidth: 1,
     borderColor: '#EDECE3',
     shadowColor: '#2E2E2C',
@@ -434,7 +383,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2E2E2C',
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 12,
+    marginLeft: spacing.md,
   },
   sendIcon: {
     color: '#FAF9EF',

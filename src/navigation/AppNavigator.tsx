@@ -2,61 +2,85 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {View, Text, TouchableOpacity, StyleSheet, Animated} from 'react-native';
 import CustomIcon from '../components/CustomIcon';
 
 import {NavigationParamList} from '../types';
 import {useAuthStore} from '../store/authStore';
-import {useTheme} from '../context/ThemeContext';
 
 // Screens
 import LoginScreen from '../screens/LoginScreen';
 import ChatScreen from '../screens/ChatScreen';
 import MemoryScreen from '../screens/MemoryScreen';
+import MessageInputScreen from '../screens/MessageInputScreen';
 
 const Stack = createStackNavigator<NavigationParamList>();
 const Tab = createBottomTabNavigator();
 
-const getTabBarIcon = (routeName: string, color: string, size: number) => {
-  let iconName: string;
+const CustomTabBar = ({state, descriptors, navigation}: any) => {
+  return (
+    <View style={styles.tabBar}>
+      {state.routes.map((route: any, index: number) => {
+        const {options} = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+            ? options.title
+            : route.name;
 
-  if (routeName === 'Chat') {
-    iconName = 'chat-bubble';
-  } else if (routeName === 'Memory') {
-    iconName = 'brain';
-  } else {
-    iconName = 'home';
-  }
+        const isFocused = state.index === index;
 
-  return <CustomIcon name={iconName} size={size} color={color} />;
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        return (
+          <TouchableOpacity
+            key={route.key}
+            accessibilityRole="button"
+            accessibilityState={isFocused ? {selected: true} : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            style={styles.tabItem}>
+            <Animated.View
+              style={[styles.tabContent, isFocused && styles.activeTab]}>
+              <CustomIcon
+                name={route.name === 'Chat' ? 'chat-bubble' : 'brain'}
+                size={24}
+                color={isFocused ? '#2E2E2C' : '#5D5C5B'}
+              />
+              <Text
+                style={[
+                  styles.tabLabel,
+                  {color: isFocused ? '#2E2E2C' : '#5D5C5B'},
+                ]}>
+                {label}
+              </Text>
+            </Animated.View>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
 };
 
 const MainTabNavigator = () => {
-  const {theme} = useTheme();
-
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
-        tabBarIcon: ({color, size}) => getTabBarIcon(route.name, color, size),
-        tabBarActiveTintColor: theme.primary,
-        tabBarInactiveTintColor: theme.textTertiary,
-        tabBarStyle: {
-          backgroundColor: theme.surface,
-          borderTopWidth: 1,
-          borderTopColor: theme.border,
-          paddingBottom: 8,
-          paddingTop: 8,
-          height: 65,
-          elevation: 8,
-          shadowColor: '#2E2E2C',
-          shadowOffset: {
-            width: 0,
-            height: -2,
-          },
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
-        },
+      tabBar={CustomTabBar}
+      screenOptions={{
         headerShown: false,
-      })}>
+      }}>
       <Tab.Screen
         name="Chat"
         component={ChatScreen}
@@ -87,7 +111,33 @@ const AppNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
         {user ? (
-          <Stack.Screen name="Main" component={MainTabNavigator} />
+          <>
+            <Stack.Screen name="Main" component={MainTabNavigator} />
+            <Stack.Screen
+              name="MessageInput"
+              component={MessageInputScreen}
+              options={{
+                presentation: 'transparentModal',
+                headerShown: false,
+                cardStyle: {backgroundColor: 'transparent'},
+                cardStyleInterpolator: ({current, layouts}) => {
+                  return {
+                    cardStyle: {
+                      backgroundColor: 'transparent',
+                      transform: [
+                        {
+                          translateY: current.progress.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [layouts.screen.height, 0],
+                          }),
+                        },
+                      ],
+                    },
+                  };
+                },
+              }}
+            />
+          </>
         ) : (
           <Stack.Screen name="Login" component={LoginScreen} />
         )}
@@ -95,5 +145,42 @@ const AppNavigator = () => {
     </NavigationContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  tabBar: {
+    flexDirection: 'row',
+    backgroundColor: '#FBFAF0',
+    borderTopWidth: 1,
+    borderTopColor: '#EDECE3',
+    paddingBottom: 12,
+    paddingTop: 12,
+    height: 70,
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+  },
+  tabContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 12,
+    minWidth: 80,
+  },
+  activeTab: {
+    backgroundColor: 'rgba(46, 46, 44, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(46, 46, 44, 0.2)',
+  },
+  tabLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: 4,
+    letterSpacing: 0.5,
+  },
+});
 
 export default AppNavigator;
