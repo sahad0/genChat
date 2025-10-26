@@ -2,6 +2,8 @@
 
 A modern React Native chat application with AI-powered conversations, memory features, and beautiful UI.
 
+PREVIEW: https://drive.google.com/file/d/1sVsyCK9kUP6Ns-6E2UCMkjXUcJaxf6x2/view?usp=sharing
+
 ## 🚀 Quick Start
 
 ### Prerequisites
