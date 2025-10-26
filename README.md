@@ -1,60 +1,52 @@
-# AiRA Chat Mobile Experience
+# AiRA - AI Chat Companion
 
-A sophisticated React Native chat application that simulates an AI companion with memory awareness, built for the AiRA technical challenge. This app demonstrates modern mobile development practices with TypeScript, Zustand state management, and beautiful UI animations.
+A modern React Native chat application with AI-powered conversations, memory features, and beautiful UI.
 
-## 🚀 Features
+## 🚀 Quick Start
 
-### Authentication Screen
+### Prerequisites
 
-- **Modern Login Interface**: Clean, gradient-based design with email/password fields
-- **Form Validation**: Real-time validation with visual feedback
-- **Demo Credentials**: Pre-filled with test credentials for easy testing
-- **Password Toggle**: Show/hide password functionality
-- **Loading States**: Smooth loading animations during authentication
+- Node.js (>= 20.0.0)
+- React Native CLI
+- iOS Simulator / Android Emulator
+- Xcode (for iOS) / Android Studio (for Android)
 
-### Chat Interface
+### Installation
 
-- **Conversational UI**: User messages right-aligned, AI messages left-aligned with avatar
-- **Streaming Simulation**: AI responses appear word-by-word with typing indicators
-- **Memory Indicators**: Subtle tags showing when AI "remembers" information
-- **Smart Responses**: Keyword-based AI responses with contextual memory
-- **Real-time Typing**: Animated typing indicators during AI response generation
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd chatApp
 
-### Memory Panel
+# Install dependencies
+npm install
 
-- **Categorized Memories**: Organized into "About You", "Preferences", and "Conversations"
-- **Visual Memory Cards**: Beautiful cards with icons, dates, and category indicators
-- **Filter System**: Category-based filtering for easy memory navigation
-- **Memory Statistics**: Display of total memories stored
+# iOS
+cd ios && pod install && cd ..
+npm run ios
 
-## 🛠 Technology Stack
+# Android
+npm run android
+```
 
-### Core Framework
+## 🏗️ Architecture
 
-- **React Native 0.82.1**: Latest stable version with TypeScript support
-- **TypeScript**: Full type safety throughout the application
-- **React Navigation 6**: Modern navigation with stack and tab navigators
+### Tech Stack
 
-### State Management
+- **React Native 0.82** - Cross-platform mobile development
+- **React Navigation v6** - Navigation with stack and tab navigators
+- **Zustand** - Lightweight state management
+- **React Native SVG** - Custom icon system
+- **React Native Animatable** - Smooth animations
+- **TypeScript** - Type safety and better DX
 
-- **Zustand 5.0.2**: Lightweight, modern state management
-- **Separated Stores**: Dedicated stores for auth, chat, and memory state
-- **Type-safe Actions**: All actions are fully typed
+### Key Features
 
-### UI & Styling
-
-- **React Native Vector Icons**: Comprehensive icon library
-- **Linear Gradients**: Beautiful gradient backgrounds and buttons
-- **React Native Animatable**: Smooth animations and transitions
-- **Custom Components**: Reusable, well-designed UI components
-
-### Navigation & Gestures
-
-- **React Navigation**: Stack and tab navigation
-- **Gesture Handler**: Smooth gesture interactions
-- **Safe Area Context**: Proper handling of device safe areas
-
-## 📱 Architecture & Design Choices
+- **Real-time AI Chat** - Streaming text responses with smooth animations
+- **Memory System** - AI remembers context and user preferences
+- **Modern UI** - Clean design with custom SVG icons and animations
+- **Smart Suggestions** - Prefilled message suggestions
+- **Responsive Design** - Adapts to keyboard and different screen sizes
 
 ### Project Structure
 
@@ -62,210 +54,63 @@ A sophisticated React Native chat application that simulates an AI companion wit
 src/
 ├── components/          # Reusable UI components
 │   ├── MessageBubble.tsx
-│   ├── MessageInput.tsx
-│   └── MemoryCard.tsx
+│   ├── StreamingText.tsx
+│   └── CustomIcon.tsx
 ├── screens/            # Screen components
-│   ├── AuthScreen.tsx
 │   ├── ChatScreen.tsx
-│   └── MemoryScreen.tsx
-├── store/              # Zustand state stores
-│   ├── authStore.ts
+│   ├── LoginScreen.tsx
+│   └── MessageInputScreen.tsx
+├── store/              # Zustand state management
 │   ├── chatStore.ts
-│   └── memoryStore.ts
-├── navigation/          # Navigation configuration
-│   └── AppNavigator.tsx
-├── types/              # TypeScript type definitions
-│   └── index.ts
-└── utils/              # Utility functions
+│   └── authStore.ts
+├── navigation/         # Navigation configuration
+└── theme/             # Design system
 ```
 
-### State Management Architecture
+## 🎨 Design Choices
 
-- **Auth Store**: Handles user authentication, login/logout, and error states
-- **Chat Store**: Manages messages, streaming simulation, and typing states
-- **Memory Store**: Manages AI memories, categories, and memory operations
+- **Custom SVG Icons** - Consistent, scalable iconography
+- **Streaming Text** - Character-by-character animation for natural feel
+- **Modal Input** - Half-height modal with keyboard-aware positioning
+- **Memory Tags** - Visual indicators for AI context awareness
+- **Smooth Animations** - Fade-in effects and responsive interactions
 
-### Design System
+## 📱 Demo
 
-- **Color Palette**: Modern purple/blue gradient theme (#6366f1, #8b5cf6)
-- **Typography**: Clean, readable fonts with proper hierarchy
-- **Spacing**: Consistent 8px grid system
-- **Shadows**: Subtle elevation for depth and hierarchy
-- **Animations**: Smooth transitions and micro-interactions
+### Key Screenshots
 
-## 🚀 Setup Instructions
+- **Chat Interface** - Clean conversation view with AI responses
+- **Message Input** - Modal-based input with suggestions
+- **Memory System** - Context-aware AI with memory tags
+- **Empty State** - Welcoming interface with suggestion chips
 
-### Prerequisites
+### Demo Video
 
-- Node.js >= 20
-- React Native CLI
-- Android Studio (for Android development)
-- Xcode (for iOS development, macOS only)
+[2-3 minute demo showing key features]
 
-### Installation
+## 🔧 Development
 
-1. **Clone and Navigate**
-
-   ```bash
-   cd chatApp
-   ```
-
-2. **Install Dependencies**
-
-   ```bash
-   yarn install
-   ```
-
-3. **iOS Setup** (macOS only)
-
-   ```bash
-   cd ios && pod install && cd ..
-   ```
-
-4. **Android Setup**
-   - Open Android Studio
-   - Open the `android` folder
-   - Sync Gradle files
-   - Create a virtual device or connect a physical device
-
-### Running the App
-
-#### Development Mode
+### Available Scripts
 
 ```bash
-# Start Metro bundler
-yarn start
-
-# Run on Android
-yarn android
-
-# Run on iOS
-yarn ios
+npm start          # Start Metro bundler
+npm run ios        # Run on iOS simulator
+npm run android    # Run on Android emulator
+npm run lint       # Run ESLint
 ```
 
-#### Production Build
+### Environment Setup
 
-```bash
-# Android
-yarn build:android
+Create `.env` file (see `.env.example`):
 
-# iOS
-yarn build:ios
+```env
+# Add any required environment variables
 ```
-
-## 🎯 Key Features Implementation
-
-### Streaming AI Responses
-
-The app simulates real AI streaming by:
-
-- Breaking responses into words
-- Displaying each word with a delay
-- Showing typing indicators during streaming
-- Maintaining smooth animations
-
-### Memory System
-
-- **Smart Categorization**: Automatically categorizes memories
-- **Contextual Tags**: Shows when AI "remembers" information
-- **Visual Indicators**: Clear memory tags in chat interface
-
-### Authentication Flow
-
-- **Mock Authentication**: Hardcoded success for demo credentials
-- **Form Validation**: Real-time email and password validation
-- **Error Handling**: User-friendly error messages
-- **Loading States**: Smooth loading animations
-
-## 📸 Demo Screenshots
-
-### Authentication Screen
-
-- Clean gradient background
-- Modern form design with validation
-- Demo credentials pre-filled
-- Smooth animations
-
-### Chat Interface
-
-- User messages on the right (blue gradient)
-- AI messages on the left (gray background)
-- AI avatar with gradient background
-- Memory tags for contextual responses
-- Typing indicators during streaming
-
-### Memory Panel
-
-- Categorized memory cards
-- Filter system by category
-- Beautiful card design with icons
-- Date formatting and statistics
-
-## 🔧 Development Features
-
-### TypeScript Integration
-
-- Full type safety across the application
-- Interface definitions for all data structures
-- Type-safe store actions and state
-
-### Modern React Patterns
-
-- Functional components with hooks
-- Custom hooks for store integration
-- Proper component separation
-
-### Performance Optimizations
-
-- FlatList for efficient message rendering
-- Memoized components where appropriate
-- Optimized animations and transitions
-
-## 🎨 UI/UX Highlights
-
-### Design Philosophy
-
-- **Minimalist**: Clean, uncluttered interface
-- **Intuitive**: Natural user interactions
-- **Accessible**: Proper contrast and touch targets
-- **Responsive**: Adapts to different screen sizes
-
-### Animation Strategy
-
-- **Micro-interactions**: Subtle feedback for user actions
-- **Smooth Transitions**: Fluid navigation between screens
-- **Loading States**: Clear feedback during async operations
-- **Gesture Feedback**: Visual response to user interactions
-
-## 🚀 Future Enhancements
-
-### Potential Improvements
-
-- **Real AI Integration**: Connect to actual AI services
-- **Push Notifications**: Real-time message notifications
-- **Offline Support**: Local storage and sync
-- **Voice Messages**: Audio recording and playback
-- **File Sharing**: Image and document sharing
-- **Themes**: Dark mode and custom themes
-
-### Technical Debt
-
-- **Testing**: Unit and integration tests
-- **Error Boundaries**: Better error handling
-- **Performance**: Memory optimization for large chat histories
-- **Accessibility**: Enhanced screen reader support
-
-## 📝 Demo Credentials
-
-For testing the authentication:
-
-- **Email**: test@aira.ai
-- **Password**: password
-
-## 🤝 Contributing
-
-This project was built as a technical challenge demonstration. The codebase follows modern React Native best practices and can serve as a foundation for a production chat application.
 
 ## 📄 License
 
-This project is created for the AiRA technical challenge and demonstrates modern mobile development practices with React Native and TypeScript.
+MIT License - see LICENSE file for details.
+
+---
+
+**Built with ❤️ using React Native**
